@@ -278,14 +278,14 @@ function setHud(i){IDX=i;const t=SC[i].dataset.t,n=String(i+1).padStart(2,'0');$
 function go(i){i=Math.max(0,Math.min(SC.length-1,i));SC[i].scrollIntoView({behavior:'smooth',block:'start'})}
 function curScene(){const y=scrollY+innerHeight*.42;let k=0;SC.forEach((s,i)=>{if(s.offsetTop<=y)k=i});return k}
 let lastScene=-1;function onScroll(){const k=curScene();SC.forEach((s,i)=>s.classList.toggle('on',i===k||Math.abs(i-k)===0));if(k!==lastScene){const prev=lastScene;lastScene=k;setHud(k);if(DEM[prev]){DEM[prev].pause()}enter(k)}}
-function enter(k){const d=DEM[k];if(k===0)flowAnim();if(window.SCN&&SCN[k])SCN[k]();if(d&&d.auto){d.onend=PRES.on?()=>presAdv(2600):null;d.restart()}if(PRES.on&&!d)presDwell(k)}
+const ENT={};function enter(k){const now=performance.now();if(ENT[k]&&now-ENT[k]<1800)return;ENT[k]=now;const d=DEM[k];if(k===0)flowAnim();if(window.SCN&&SCN[k])SCN[k]();if(d&&d.auto){d.onend=PRES.on?()=>presAdv(2600):null;if(PEND&&PEND.i===k&&performance.now()-PEND.t0<9000){const t=PEND.t;PEND=null;d.seek(t);d.play()}else d.restart()}if(PRES.on&&!d)presDwell(k)}
 const PRES={on:false,paused:false,t:null};const DW={0:12000,2:22000,8:12000,9:20000,10:9000};
 function presDwell(k){clearTimeout(PRES.t);if(k===SC.length-1){PRES.t=setTimeout(presStop,DW[10]);return}PRES.t=setTimeout(()=>presAdv(0),DW[k]||12000)}
 function presAdv(d){clearTimeout(PRES.t);if(!PRES.on||PRES.paused)return;PRES.t=setTimeout(()=>{if(PRES.on&&!PRES.paused)go(IDX+1)},d)}
 function presStart(){PRES.on=true;PRES.paused=false;document.documentElement.classList.add('pres');$('#bPresT').textContent='Pausar apresentação';$('#bPresI').textContent='⏸';go(0);lastScene=-1;setTimeout(()=>{onScroll();if(IDX===0)presDwell(0)},700)}
 function presStop(){PRES.on=false;clearTimeout(PRES.t);document.documentElement.classList.remove('pres');$('#bPresT').textContent='Iniciar apresentação';$('#bPresI').textContent='▶'}
 function presToggle(){if(!PRES.on){presStart();return}PRES.paused=!PRES.paused;const d=DEM[IDX];if(PRES.paused){clearTimeout(PRES.t);if(d)d.pause();$('#bPresT').textContent='Retomar apresentação';$('#bPresI').textContent='▶'}else{$('#bPresT').textContent='Pausar apresentação';$('#bPresI').textContent='⏸';if(d){d.onend=()=>presAdv(2600);d.play()}else presDwell(IDX)}}
-function goDemo(i,t){go(i);setTimeout(()=>{const d=DEM[i];if(d){d.auto=true;d.seek(t||0);d.play()}},900)}
+let PEND=null;function goDemo(i,t){const d=DEM[i];if(d)d.auto=true;if(IDX===i&&d){PEND=null;d.seek(t||0);d.play();return}PEND={i:i,t:t||0,t0:performance.now()};go(i)}
 /* ---------- montagem ---------- */
 function build(){
  $$('.sp').forEach(splitWords);
@@ -505,7 +505,7 @@ function initS9(){const V=[['🌐','Presença digital individual','Um site com o
  const O=[['🧩','Experiência digital mais organizada','Um padrão de apresentação para todos os vendedores'],['🏷️','Padronização da apresentação','As mesmas condições e o mesmo catálogo-base'],['📣','Facilidade de divulgação','Links individuais e artes prontas'],['🧭','Estrutura para acompanhar oportunidades','Cada contato registrado com situação e fase'],['👁️','Visibilidade sobre acessos e interesse','Indicadores por vendedor'],['➕','Expansão para novos vendedores','Cada novo vendedor ganha o seu ambiente'],['🚀','Estrutura que pode evoluir','Novas funcionalidades podem ser acrescentadas']];
  const it=(a,i)=>`<div class="card it" data-r style="--d:${i*.06}s"><i>${a[0]}</i><b>${a[1]}</b><p>${a[2]}</p></div>`;$('#bn1').innerHTML=V.map(it).join('');$('#bn2').innerHTML=O.map(it).join('');
  $('#nums').innerHTML=[[10,'fases de venda no Playbook'],[100,'scripts prontos de atendimento'],[4,'canais de captação (chat, ficha CDC, pré-contrato CNH e contato)'],[7,'combinações de cores prontas']].map((n,i)=>`<div class="card" data-r style="--d:${i*.1}s"><b class="red" data-n="${n[0]}">0</b><small>${n[1]}</small></div>`).join('');
- SCN[9]=()=>$$('#nums b').forEach(b=>countTo(b,+b.dataset.n,1400,v=>String(Math.round(v))))}
+ let S9T=0;SCN[9]=()=>{const n=performance.now();if(S9T&&n-S9T<4000)return;S9T=n;$$('#nums b').forEach(b=>countTo(b,+b.dataset.n,1400,v=>String(Math.round(v))))}}
 /* ---------- INÍCIO ---------- */
 function initAll(){buildFlow($('#flow10'),FLOW10);$('#wing10').setAttribute('d',WING_D);initS0();initS1();initS2();initS3();initS4();initS5();initS6();initS7();initS8();initS9();build();layout();SC[0].classList.add('on');
  setTimeout(()=>{fit();lastScene=-1;onScroll()},120)}
