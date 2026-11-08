@@ -434,7 +434,7 @@ function initS4(){const pm=$('#pm4');pm.innerHTML=pmHTML();const root=pm;$('.idl
  at(3600,()=>{rows[0].classList.add('novo');drw.classList.add('on')},'Ao abrir um cliente, o vendedor vê todos os dados preenchidos e o botão de WhatsApp.');kvs.forEach((k,i)=>at(4200+i*330,()=>k.classList.add('on')));at(7900,()=>drw.classList.remove('on'));
  at(B,()=>{pmView(root,1);pin(1)},P4[1][1]+'. Valores de demonstração.',2);
  at(B+400,f=>{$$('.kpis b',root).forEach(b=>{const v=+b.dataset.n;if(f)b.textContent=v;else countTo(b,v,1400,x=>String(Math.round(x)))})});at(B+700,()=>{$$('.bars i',root).forEach(i=>i.style.height=i.dataset.h+'%')});at(B+1200,()=>{$$('.hb2 i',root).forEach(i=>i.style.width=i.dataset.w+'%')});
- at(B*2,()=>{pmView(root,2);pin(2)},P4[2][1]+'.',3);$$('.gimgs img',root).forEach((im,i)=>at(B*2+300+i*2100,()=>{$$('.gimgs img',root).forEach((x,k)=>x.style.opacity=k===i?1:0);$$('.vw[data-v="2"] .gp',root).forEach((x,k)=>x.classList.toggle('on',k===i))}));
+ at(B*2,()=>{pmView(root,2);pin(2)},P4[2][1]+'.',3);$$('.gimgs img',root).forEach((im,i)=>at(B*2+300+i*2100,()=>{$$('.gimgs img',root).forEach((x,k)=>x.style.opacity=k===i?1:0);const nvI=[0,4,5][i];$$('.nv',root).forEach((n,q)=>n.classList.toggle('on',q===nvI));$$('.vw[data-v="2"] .gp',root).forEach((x,k)=>x.classList.toggle('on',k===i))}));
  d4=new Demo({stage:$('#st4'),steps:T,dur:B*3,cap:'#cap4',bar:'#pl4',name:'painel',reset:()=>{hide();pmView(root,0);pin(-1)}});DEM[4]=d4;
  $('#pins4').onclick=e=>{const l=e.target.closest('li');if(l){d4.seek(+l.dataset.i*B+60);d4.pause()}}}
 
