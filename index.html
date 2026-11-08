@@ -166,6 +166,11 @@ html.pres{scroll-snap-type:y mandatory}
 #s3 .lead{display:none}.lane .sync{position:static;margin-top:auto;border-radius:10px;background:linear-gradient(90deg,#ff2d4440,#ff2d4410)}
 #s4 .wrap.two,#s5 .wrap.two{grid-template-columns:minmax(0,.66fr) minmax(0,1.7fr)}.pers{grid-template-columns:minmax(0,.62fr) minmax(0,1.9fr)}
 @media(max-width:1100px){#s4 .wrap.two,#s5 .wrap.two,.pers{grid-template-columns:1fr}}
+
+.pm .row .tg .wt{background:#fff3d6;color:#9a6700;animation:wt 1.2s infinite}.pm .row .tg .pc{background:#eef0f7;color:#44445a}@keyframes wt{50%{opacity:.45}}
+.gimgs img{width:120.7%!important;left:-20.7%!important}
+.gimgs img{top:-64px!important}
+.pm .toast{top:auto;bottom:22px;left:28px;right:auto;transform:translateY(170%)}.pm .toast.on{transform:none}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff3a4d"/><stop offset=".5" stop-color="#e4172b"/><stop offset="1" stop-color="#a30e1c"/></linearGradient></defs></svg>
 <canvas id="fx" aria-hidden="true"></canvas><div class="grid-bg"></div><div class="glow a" id="ga"></div><div class="glow b" id="gb"></div>
 <div id="prog" aria-hidden="true"><i></i></div>
@@ -387,13 +392,21 @@ function layout(){const H=(id)=>{const el=$('#'+id);return el};
  const dk1=$('#dk1');if(dk1){const w=Math.min($('#st1').clientWidth*.86,(innerHeight*.56-34)*1280/720);dk1.style.width=w+'px';const p1=$('#ph1');p1.style.width=(w*.2)+'px';p1.style.bottom='auto';p1.style.top=(dk1.offsetHeight*.3)+'px';p1.style.right='-1%'}
  fit()}
 function initS3(){const vp=$('#vp3'),pm=$('#pm3');vp.innerHTML=pvHTML();pm.innerHTML=pmHTML();
- const chat=$('.chat',vp),msgs=$('.msgs',vp),qr=$('.qr',vp),ti=$('.ti',vp),st=$('#st3'),cur=mkCursor(st,$('#cur3')),lane=$('#lane3'),drw=$('.dr',pm),toast=$('.toast',pm),idle=$('.idle',pm),inn=$('.in',vp);
- lane.innerHTML='<h5>Dados do cliente</h5>'+D3.map(d=>`<div class="it"><div><b>${d[0]}</b><span>${d[1]}</span></div></div>`).join('')+'<div class="sync">SINCRONIZANDO…</div>';
+ const chat=$('.chat',vp),msgs=$('.msgs',vp),qr=$('.qr',vp),ti=$('.ti',vp),st=$('#st3'),cur=mkCursor(st,$('#cur3')),lane=$('#lane3'),drw=$('.dr',pm),toast=$('.toast',pm),idle=$('.idle',pm),inn=$('.in',vp),row=$('.lst',pm);
+ lane.innerHTML='<h5>Dados do cliente</h5>'+D3.map(d=>`<div class="it"><div><b>${d[0]}</b><span>${d[1]}</span></div></div>`).join('')+'<div class="sync">● AO VIVO · ATUALIZANDO O PAINEL</div>';
  const bot=(t)=>{const m=document.createElement('div');m.className='m b';m.textContent=t;msgs.appendChild(m);if(!d3||!d3.fast)SND.pop()},usr=t=>{const m=document.createElement('div');m.className='m u';m.textContent=t;msgs.appendChild(m);ti.textContent='';if(!d3||!d3.fast)SND.send()};
- const chips=a=>{qr.innerHTML=a.map(t=>`<span>${t}</span>`).join('')},hit=k=>{const s=qr.children[k];if(s)s.classList.add('hit')};
- const laneOn=k=>$$('.it',lane).forEach((e,i)=>e.classList.toggle('on',i<k));
- const row=$('.lst',pm),newRow=`<div class="row novo nr"><div class="ci">C</div><div><b>Cliente Demonstração</b><small>POP 110I ES · Azul · Consórcio 80x</small></div><div class="tg"><span class="n">NOVO</span><span class="b">Chat</span><span>1 · Prospecção</span></div></div>`;
- const kvs=$$('.kv',pm),T=[],at=(t,f,cap,n)=>T.push({t,f,cap,n});
+ const chips=a=>{qr.innerHTML=a.map(t=>`<span>${t}</span>`).join('')},hit=k=>{const c=qr.children[k];if(c)c.classList.add('hit')};
+ const laneOn=k=>$$('.it',lane).forEach((e,i)=>e.classList.toggle('on',i<k)),sync=$('.sync',lane);
+ const kvs=$$('.kv',pm),KV=[0,1,4,5,6,2,3],SUB=['','Chat da vitrine · nome e WhatsApp','POP 110I ES · Chat da vitrine','POP 110I ES · Azul · Chat da vitrine','POP 110I ES · Azul · Consórcio 80x','POP 110I ES · Azul · Consórcio 80x · CPF informado','POP 110I ES · Azul · Consórcio 80x · dados completos'];
+ const draftRow=`<div class="row novo nr"><div class="ci">C</div><div><b>Cliente Demonstração</b><small></small></div><div class="tg"><span class="wt">● PREENCHENDO AGORA</span><span class="b">Chat</span><span class="pc"></span></div></div>`;
+ const setToast=(t,s)=>{$('b',toast).textContent=t;$('small',toast).textContent=s};
+ const fly=(k,f)=>{if(f)return;const a=st.getBoundingClientRect(),it=$$('.it',lane)[k],d=$('#dk3').getBoundingClientRect(),tg=(k>=1&&kvs[KV[k]])?kvs[KV[k]].getBoundingClientRect():d;if(!it)return;const r=it.getBoundingClientRect(),p=document.createElement('div');p.className='pk';st.appendChild(p);const sx=r.left-a.left+r.width/2,sy=r.top-a.top+r.height/2,ex=(k>=1&&kvs[KV[k]])?tg.left-a.left+40:d.left-a.left+d.width*.28,ey=(k>=1&&kvs[KV[k]])?tg.top-a.top+tg.height/2:d.top-a.top+d.height*.3;p.animate([{left:sx+'px',top:sy+'px',opacity:0,transform:'scale(.4)'},{opacity:1,transform:'scale(1)',offset:.15},{left:ex+'px',top:ey+'px',opacity:1,offset:.85},{left:(ex+20)+'px',top:ey+'px',opacity:0,transform:'scale(.3)'}],{duration:1100,easing:'ease-in-out'}).onfinish=()=>p.remove();SND.whoosh()};
+ const feed=(k,f)=>{laneOn(k+1);fly(k,f);
+  if(k>=1&&!$('.nr',pm)){row.insertAdjacentHTML('afterbegin',draftRow);drw.classList.add('on');setToast('Cliente começou o chat','Cliente Demonstração · preenchendo agora');toast.classList.add('on');sync.classList.add('on');kvs[0].classList.add('on');kvs[1].classList.add('on');if(!f)SND.chime();setTimeout(()=>toast.classList.remove('on'),2600)}
+  else if(k>=2&&kvs[KV[k]])kvs[KV[k]].classList.add('on');
+  const r=$('.nr',pm);if(r&&k>=1){$('small',r).textContent=SUB[k];$('.pc',r).textContent=(k+1)+' de 7 dados'}};
+ const finish=f=>{const r=$('.nr',pm);if(!r)return;$('.tg',r).innerHTML='<span class="n">NOVO</span><span class="b">Chat</span><span>1 · Prospecção</span>';$('small',r).textContent='POP 110I ES · Azul · Consórcio 80x';kvs[7].classList.add('on');kvs[8].classList.add('on');sync.textContent='CADASTRO COMPLETO ✓';setToast('Novo pedido pelo chat','Cliente Demonstração · POP 110I ES');toast.classList.add('on');if(!f)SND.chime();setTimeout(()=>toast.classList.remove('on'),3200)};
+ const T=[],at=(t,f,cap,n)=>T.push({t,f,cap,n});
  const typ=(t0,txt,cps)=>{typeSteps(t0,cps,txt,(s)=>{ti.textContent=s}).forEach(s=>T.push(s))};
  at(200,()=>{},'O cliente acessa a vitrine do vendedor pelo celular.',1);
  at(1900,()=>cur.to('#barSim'),'Ele toca em “Simular” para falar com o vendedor virtual.',2);at(3100,f=>cur.click(f));at(3300,()=>{chat.classList.add('on');cur.off()});
@@ -401,22 +414,17 @@ function initS3(){const vp=$('#vp3'),pm=$('#pm3');vp.innerHTML=pvHTML();pm.inner
  at(5400,()=>{bot('Posso te ajudar a encontrar uma moto. O que você procura?');chips(['Quero uma moto','Quero financiamento','Quero consórcio','Quero saber os preços','Falar com o vendedor'])});
  at(7000,()=>cur.to('.qr span:nth-child(3)',0,0));at(7900,f=>cur.click(f));at(8100,()=>{hit(2);});at(8500,()=>{usr('Quero consórcio');chips([]);cur.off()});
  at(9300,()=>bot('Ótimo! Vou pegar alguns dados para a pré-análise.'));at(10100,()=>bot('Qual o seu nome?'));
- typ(10800,'Cliente Demonstração',13);at(13000,()=>{usr('Cliente Demonstração');laneOn(1)},'O cliente informa os dados, como em uma conversa.',4);
- at(13700,()=>bot('Qual seu WhatsApp com DDD?'));typ(14300,'(68) 99999-0000',12);at(15700,()=>{usr('(68) 99999-0000');laneOn(2)});
- at(16400,()=>{bot('Cliente, qual moto Honda do seu interesse?');chips(M.map(m=>m.s))});at(17800,()=>cur.to('.qr span:nth-child(1)'));at(18600,f=>cur.click(f));at(18800,()=>{hit(0);usr('POP 110I ES');chips([]);laneOn(3);cur.off()});
- at(19500,()=>{bot('Qual cor você prefere para a POP 110I ES?');chips(['Azul','Branco','Vermelho','Sem preferência'])});at(20800,()=>cur.to('.qr span:nth-child(1)'));at(21500,f=>cur.click(f));at(21700,()=>{usr('Azul');chips([]);laneOn(4);cur.off()});
- at(22400,()=>{bot('Qual parcela do consórcio cabe melhor no seu bolso?');chips(['80x de R$ 216,60','60x de R$ 280,54','48x de R$ 345,55'])});at(23700,()=>cur.to('.qr span:nth-child(1)'));at(24400,f=>cur.click(f));at(24600,()=>{usr('80x de R$ 216,60');chips([]);laneOn(5);cur.off()});
+ typ(10800,'Cliente Demonstração',13);at(13000,f=>{usr('Cliente Demonstração');feed(0,f)},'Cada resposta já aparece em “Dados do cliente” e segue para o painel na mesma hora.',4);
+ at(13700,()=>bot('Qual seu WhatsApp com DDD?'));typ(14300,'(68) 99999-0000',12);at(15700,f=>{usr('(68) 99999-0000');feed(1,f)},'Com nome e WhatsApp, o cadastro já aparece no painel como “preenchendo agora”.',5);
+ at(16400,()=>{bot('Cliente, qual moto Honda do seu interesse?');chips(M.map(m=>m.s))});at(17800,()=>cur.to('.qr span:nth-child(1)'));at(18600,f=>cur.click(f));at(18800,f=>{hit(0);usr('POP 110I ES');chips([]);feed(2,f);cur.off()},'A moto escolhida entra no cadastro do painel, sem esperar o fim da conversa.',6);
+ at(19500,()=>{bot('Qual cor você prefere para a POP 110I ES?');chips(['Azul','Branco','Vermelho','Sem preferência'])});at(20800,()=>cur.to('.qr span:nth-child(1)'));at(21500,f=>cur.click(f));at(21700,f=>{usr('Azul');chips([]);feed(3,f);cur.off()});
+ at(22400,()=>{bot('Qual parcela do consórcio cabe melhor no seu bolso?');chips(['80x de R$ 216,60','60x de R$ 280,54','48x de R$ 345,55'])});at(23700,()=>cur.to('.qr span:nth-child(1)'));at(24400,f=>cur.click(f));at(24600,f=>{usr('80x de R$ 216,60');chips([]);feed(4,f);cur.off()});
  at(25300,()=>bot('Qual é o seu nome completo?'));typ(25900,'Cliente Demonstração',14);at(27700,()=>usr('Cliente Demonstração'));
- at(28300,()=>bot('Agora me informe seu CPF, somente os números.'));typ(28900,'000.000.000-00',11);at(30300,()=>{usr('000.000.000-00');laneOn(6)});
- at(31000,()=>bot('Qual é a sua data de nascimento, no formato DD/MM/AAAA?'));typ(31700,'01/01/1990',10);at(32800,()=>{usr('01/01/1990');laneOn(7)},'CPF e data são fictícios: nesta demonstração nada é gravado nem enviado.',5);
- at(34200,()=>{},'Os dados confirmados saem da vitrine e viajam até o painel do vendedor.',6);
- at(34600,f=>{$('.sync',lane).classList.add('on');inn.style.filter='saturate(.5)';if(f)return;SND.whoosh();const a=st.getBoundingClientRect(),b=$$('.it',lane),d=$('#dk3').getBoundingClientRect();b.forEach((e,i)=>{const r=e.getBoundingClientRect(),p=document.createElement('div');p.className='pk';st.appendChild(p);const sx=r.left-a.left+r.width/2,sy=r.top-a.top+r.height/2,ex=d.left-a.left+d.width*.18,ey=d.top-a.top+d.height*(.3+.05*i);p.animate([{left:sx+'px',top:sy+'px',opacity:0,transform:'scale(.4)'},{opacity:1,transform:'scale(1)',offset:.15},{left:ex+'px',top:ey+'px',opacity:1,offset:.85},{left:(ex+30)+'px',top:ey+'px',opacity:0,transform:'scale(.3)'}],{duration:1900,delay:i*170,easing:'ease-in-out'}).onfinish=()=>p.remove()})});
- at(37200,()=>{idle.classList.add('off')});
- at(38000,()=>{toast.classList.add('on');if(!d3.fast)SND.chime();row.insertAdjacentHTML('afterbegin',newRow);$('.sync',lane).textContent='RECEBIDO NO PAINEL ✓'},'O painel recebe o novo cliente, com aviso e destaque na lista.',7);
- at(41500,()=>{toast.classList.remove('on');cur.to('.nr')});at(42500,f=>cur.click(f));at(42700,()=>drw.classList.add('on'),'O vendedor abre o cadastro: são os mesmos dados informados pelo cliente na vitrine.',8);
- kvs.forEach((k,i)=>at(43600+i*420,()=>k.classList.add('on')));
- at(48000,()=>{cur.to('.wb');$('.wb',pm).classList.add('pulse')},'Com um toque, o vendedor chama o cliente pelo WhatsApp.',9);at(49000,f=>cur.click(f));at(50500,()=>cur.off(),'Da vitrine ao painel: uma oportunidade que não se perde em conversas desorganizadas.',10);
- d3=new Demo({stage:st,steps:T,dur:54000,cap:'#cap3',bar:'#pl3',name:'simulação',reset:()=>{msgs.innerHTML='';qr.innerHTML='';ti.textContent='';chat.classList.remove('on');cur.off();laneOn(0);$('.sync',lane).classList.remove('on');$('.sync',lane).textContent='SINCRONIZANDO…';inn.style.filter='';idle.classList.remove('off');drw.classList.remove('on');toast.classList.remove('on');$$('.nr',pm).forEach(e=>e.remove());kvs.forEach(k=>k.classList.remove('on'));$('.wb',pm).classList.remove('pulse');$$('.pk',st).forEach(e=>e.remove())}});DEM[3]=d3}
+ at(28300,()=>bot('Agora me informe seu CPF, somente os números.'));typ(28900,'000.000.000-00',11);at(30300,f=>{usr('000.000.000-00');feed(5,f)},'O CPF é fictício: nesta demonstração nada é gravado nem enviado.',7);
+ at(31000,()=>bot('Qual é a sua data de nascimento, no formato DD/MM/AAAA?'));typ(31700,'01/01/1990',10);at(32800,f=>{usr('01/01/1990');feed(6,f)});
+ at(34600,f=>finish(f),'Pedido completo: o cadastro no painel muda para NOVO e o vendedor é avisado.',8);
+ at(37000,()=>{cur.to('.wb');$('.wb',pm).classList.add('pulse')},'Com um toque, o vendedor chama o cliente pelo WhatsApp.',9);at(38000,f=>cur.click(f));at(40000,()=>cur.off(),'Do preenchimento ao painel, sem esperar: uma oportunidade que não se perde em conversas desorganizadas.',10);
+ d3=new Demo({stage:st,steps:T,dur:43000,cap:'#cap3',bar:'#pl3',name:'simulação',reset:()=>{msgs.innerHTML='';qr.innerHTML='';ti.textContent='';chat.classList.remove('on');cur.off();laneOn(0);sync.classList.remove('on');sync.textContent='● AO VIVO · ATUALIZANDO O PAINEL';inn.style.filter='';idle.classList.add('off');drw.classList.remove('on');toast.classList.remove('on');$$('.nr',pm).forEach(e=>e.remove());kvs.forEach(k=>k.classList.remove('on'));$('.wb',pm).classList.remove('pulse');$$('.pk',st).forEach(e=>e.remove())}});DEM[3]=d3}
 /* ---------- CENA 4: painel ---------- */
 const P4=[['Clientes','Os contatos que chegam da vitrine, organizados por canal, situação e fase da venda'],['Visitas ao site','Visitas, cliques no WhatsApp, motos mais vistas, origem e dispositivo'],['Playbook de vendas','10 fases da venda e 100 scripts prontos para copiar e colar'],['Gestão individual','Cada vendedor administra os seus clientes, motos, materiais e personalização']];
 let d4;
